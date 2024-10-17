@@ -55,7 +55,7 @@ def posts(request):
 class SinglePostView(View):
 
   def is_stored_post(self, request, post_id):
-    stored_posts = request.session.get('stored_posts')
+    stored_posts = request.session.get('stored_post')
     if stored_posts is not None :
       is_saved_for_later = post_id in stored_posts
     else:
@@ -94,7 +94,7 @@ class SinglePostView(View):
       'comments' : post.comments.all().order_by('-id'),
       'saved_for_later': self.is_stored_post(request, post.id)
     }
-    return render(request, 'blog/post-detail.html', context)
+    return render(request, 'blog/post-detail.html', context, comment)
   
 '''
 def post_detail(request, slug):
@@ -111,7 +111,7 @@ class ReadLaterView(View):
 
 
   def get(self, request):
-    stored_post = request.session.get('stored_posts')
+    stored_post = request.session.get('stored_post')
 
     context = {}
 
@@ -123,10 +123,11 @@ class ReadLaterView(View):
       context['posts'] = posts
       context['has_posts'] = True
 
+
     return render(request, 'blog/stored-posts.html', context)
 
   def post(self, request):
-    stored_post = request.session.get('stored_posts')
+    stored_post = request.session.get('stored_post')
 
     if stored_post is None:
       stored_post = []
@@ -139,6 +140,7 @@ class ReadLaterView(View):
       stored_post.remove(post_id) #remove post_id to the session
 
     request.session['stored_post'] = stored_post
+
 
     return HttpResponseRedirect('/')
 
